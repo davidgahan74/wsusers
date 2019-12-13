@@ -9,15 +9,33 @@ var port = 3800;
 // Le indicamos a Mongoose que haremos la conexión con Promesas
 mongoose.Promise = global.Promise;
 // Usamos el método connect para conectarnos a nuestra base de datos
-mongoose.connect('mongodb://localhost:27017/curso_mean_social',  { useMongoClient: true})
-    .then(() => {
-        // Cuando se realiza la conexión, lanzamos este mensaje por consola
-        console.log("La conexión a la base de datos curso_mean_social se ha realizado correctamente")
+
+//mongoose.connect('mongodb://192.168.99.100:32768/museum_db', { useNewUrlParser: true});
+
+var mongo_host = (process.env.MONGO_SERVICE_HOST || 'localhost' );
+var mongo_port = (process.env.MONGO_SERVICE_PORT || 27017 );
+var url = 'mongodb://'+mongo_host+':'+mongo_port+'/museum_db';
+
+mongoose.connect(url, {
+    useUnifiedTopology: true,
+    useNewUrlParser: true})
+    .then(() => console.log("La conexión a la base de datos museum_db se ha realizado correctamente"+"_"+url))
+    .catch(err => console.log("Error connecting db", err + url));
+
+var db = mongoose.connection;
+
+
+// Setup server port
+var port = process.env.PORT || 8080;
+
     
         // CREAR EL SERVIDOR WEB CON NODEJS
         app.listen(port, () => {
-            console.log("servidor corriendo en http://localhost:3800");
+            console.log("** Running ServerUser on port **" + port);
         });
-    })
-    // Si no se conecta correctamente escupimos el error
-    .catch(err => console.log(err));
+  
+
+    
+
+
+
